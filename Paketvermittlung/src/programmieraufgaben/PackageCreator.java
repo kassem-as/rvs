@@ -86,13 +86,16 @@ public class PackageCreator {
             }
 
             if(sanad.isEmpty()){
-                sanad = "\n";
+                
+                dataPackage.setNachricht((dataPackage.getNachricht() + "\n"));
             }
+            else {
 
-            dataPackage.setNachricht(dataPackage.getNachricht() + sanad + "\n" + " ");
+                dataPackage.setNachricht(dataPackage.getNachricht() + sanad +"\n" + " ");
 
-
+            }
         }
+        System.out.println(dataPackage.getNachricht());
         dataPackage.setNachricht(dataPackage.getNachricht().replaceAll("^[\n\r]", "").replaceAll("^[\n\r]", ""));
         dataPackage.setNachricht(dataPackage.getNachricht().trim());
         dataPackage.setNachricht(dataPackage.getNachricht().replaceAll("[\n\r]", "\\\\n"));
@@ -111,6 +114,23 @@ public class PackageCreator {
      */
     public List<DataPackage> splitPackage(DataPackage dataPackage) {
         List<DataPackage> dataPackages = new LinkedList<>();
+        String[] arrOfStr = dataPackage.getNachricht().split(" ");
+        for(int i = 0; i< arrOfStr.length; i++){
+            if(arrOfStr[i].contains("\\n")){
+                if(arrOfStr[i].length() - 2 > dataPackage.getDataPackageLength()){
+                    System.out.println("Die Nachricht kann nicht versendet werden, da sie ein Wort mit Laenge " +
+                                    arrOfStr[i].length()+" > " + dataPackage.getDataPackageLength() + " enthaelt.");
+                    return null;
+                }
+            }else{
+                if(arrOfStr[i].length()>dataPackage.getDataPackageLength()){
+                    System.out.println("Die Nachricht kann nicht versendet werden, da sie ein Wort mit Laenge " +
+                            arrOfStr[i].length()+" > " + dataPackage.getDataPackageLength() + " enthaelt.");
+                    return null;
+                }
+            }
+        }
+
 
         return dataPackages;
     }
@@ -124,3 +144,4 @@ public class PackageCreator {
 
     }
 }
+

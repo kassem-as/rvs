@@ -20,7 +20,6 @@ public class DataPackage {
     public DataPackage(int dataPackageLength) {
         this.dataPackageLength = dataPackageLength;
     }
-
     /**
      * Gibt die maximale Datenteil-Länge zurück
      * @return maximale Datenteil-Länge
