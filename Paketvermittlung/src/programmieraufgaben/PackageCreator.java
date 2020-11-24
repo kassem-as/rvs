@@ -135,6 +135,7 @@ public class PackageCreator {
                 element.setNachricht(arrOfStr[j]);
                 dataPackages.add(element);
                 add++;
+                if(j== arrOfStr.length-1){ break;}
                 for(int k = j+1; k<arrOfStr.length; k++){
                     if(dataPackages.get(add).getNachricht().length() + 1 + arrOfStr[k].length() <= dataPackage.getDataPackageLength()){
                         dataPackages.get(add).setNachricht(dataPackages.get(add).getNachricht() + " " + arrOfStr[k]);
@@ -159,9 +160,7 @@ public class PackageCreator {
                     dataPackages.add(element2);
                     add++;
                     arrOfStr[j+1] = "\\n" + arrOfStr[j+1];
-
                 }
-
             }
         }
 
