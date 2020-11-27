@@ -9,7 +9,7 @@ public class DataPackage {
     private int dataPackageLength;
     private int version;
     private String sender;
-    private String empfaenger;
+    private String receiver;
     private String nachricht;
     private int packetLaufNummer;
 
@@ -40,11 +40,11 @@ public class DataPackage {
         this.version = version;
     }
     public void setSender (String sender) { this.sender = sender;}
-    public void setEmpfaenger (String empfaenger) { this.empfaenger = empfaenger;}
+    public void setReceiver(String receiver) { this.receiver = receiver;}
     public void setNachricht (String nachricht) {this.nachricht = nachricht;}
     public int getVersion() {return version;}
     public String getSender() {return sender;}
-    public String getEmpfaenger() {return empfaenger;}
+    public String getReceiver() {return receiver;}
     public String getNachricht() {return nachricht;}
     public void setPacketLaufNummer (int packetLaufNummer) {this.packetLaufNummer= packetLaufNummer;}
     public int getPacketLaufNummer() { return packetLaufNummer;}

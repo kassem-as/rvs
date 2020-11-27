@@ -2,7 +2,6 @@ package programmieraufgaben;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,9 +19,9 @@ public class PackageCreator {
      */
     public DataPackage fillParameters(DataPackage dataPackage) {
 
-        System.out.print("Version : "); dataPackage.setVersion(input.nextInt());
+       System.out.print("Version : "); dataPackage.setVersion(input.nextInt());
         if(dataPackage.getVersion()!=4 && dataPackage.getVersion()!=6) { System.out.
-                println("Version ungueltig. Bitte waehlen Sie entweder Version 4 oder Version 6."
+                println("Version ungültig. Bitte wählen Sie entweder Version 4 oder Version 6."
                 ); return null; }
 
         System.out.print("Absender : "); dataPackage.setSender(input.next());
@@ -41,22 +40,21 @@ public class PackageCreator {
                 System.out.println("Bitte geben sie eine richtige format des IPv6"); return
                         null; } }
 
-        System.out.print("Empfaenger : "); dataPackage.setEmpfaenger(input.next());
+        System.out.print("Empfänger : "); dataPackage.setReceiver(input.next());
 
         if(dataPackage.getSender() == null) {
             System.out.println("Bitte geben sie eine richtige ipv4"); return null; }
 
         String [] ipReceiver; if(dataPackage.getVersion()==4) { ipReceiver =
-                dataPackage.getEmpfaenger().split("\\.");
+                dataPackage.getReceiver().split("\\.");
 
 
             if(ipReceiver.length < 4|| ipReceiver.length >4) {
                 System.out.println("Bitte geben sie eine richtige format des IPv4"); return
-                        null; } }else { ipReceiver = dataPackage.getEmpfaenger().split("\\.");
+                        null; } }else { ipReceiver = dataPackage.getReceiver().split("\\.");
             if(ipReceiver.length < 6 || ipReceiver.length >6 ) {
                 System.out.println("Bitte geben sie eine richtige format des IPv6"); return
                         null; } }
-
 
         String sanad = "";
         String str = "";
@@ -74,6 +72,12 @@ public class PackageCreator {
                 dataPackage.setNachricht((dataPackage.getNachricht() + "\n"));
             }
             else {
+                Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                Matcher m = p.matcher(sanad);
+                boolean b = m.find();
+                if(b){
+                    sanad = sanad.replaceAll("\\W"," $0 ");
+                }
 
                 dataPackage.setNachricht(dataPackage.getNachricht() + " " + sanad + " " +"\n" + " ");
 
@@ -83,6 +87,7 @@ public class PackageCreator {
         dataPackage.setNachricht(dataPackage.getNachricht().trim());
         dataPackage.setNachricht(dataPackage.getNachricht().replaceAll("[\n\r]", "\\\\n"));
         dataPackage.setNachricht(dataPackage.getNachricht().trim());
+        System.out.println(dataPackage.getNachricht());
         return dataPackage;
     }
 
@@ -103,9 +108,13 @@ public class PackageCreator {
                 return 0; //nicht geht
             }
         }else {
-            if((input.length() + extension.length() + 1)<=dataPackage.getDataPackageLength()) {
-                return 2; //fall nicht \n und geht
-            }else {
+            if((input.valueOf(input.charAt(input.length()-1)).matches("[^a-zA-Z0-9]") || extension.valueOf(extension.charAt(0)).
+                    matches("[^a-zA-Z0-9]")) &&
+                    input.length() + extension.length() <= dataPackage.getDataPackageLength()) {
+                return 3;
+            }else if ((input.length() + extension.length() + 1)<=dataPackage.getDataPackageLength()){
+                return 2;
+            } else {
                 return 0; // nicht geht
             }
         }
@@ -114,9 +123,10 @@ public class PackageCreator {
 
     public List<DataPackage> splitPackage(DataPackage dataPackage) {
         List<DataPackage> dataPackages = new LinkedList<>();
-
-        String [] result = dataPackage.getNachricht().split("( )");
-
+        String [] result = dataPackage.getNachricht().split(" +");
+        for(int j = 0;j<result.length;j++){
+            System.out.println(result[j]);
+        }
         for(int i=0; i<result.length; i++) {
             String input=result[i];
             for(int j=i+1; j<result.length; j++) {
@@ -131,14 +141,19 @@ public class PackageCreator {
                     if((j==result.length-1)) {
                         i = j;
                     }
-                }else {
+                }else if(checkLength(input, extension, dataPackage) == 3){
+                    input = input + extension;
+                    if(j==result.length-1){
+                        i=j;
+                    }
+                } else {
                     i=j-1;
                     break;
                 }
             }
             DataPackage newPackage= new DataPackage(input.length());
             newPackage.setNachricht(input);
-            newPackage.setEmpfaenger(dataPackage.getEmpfaenger());
+            newPackage.setReceiver(dataPackage.getReceiver());
             newPackage.setSender(dataPackage.getSender());
             newPackage.setVersion(dataPackage.getVersion());
             dataPackages.add(newPackage);
@@ -161,9 +176,9 @@ public class PackageCreator {
             dataPackages.get(i).setPacketLaufNummer(i+1);
             System.out.println("Version: " +dataPackages.get(i).getVersion());
             System.out.println("Absender: " +dataPackages.get(i).getSender());
-            System.out.println("Empfaenger: " +dataPackages.get(i).getEmpfaenger());
+            System.out.println("Empfänger: " +dataPackages.get(i).getReceiver());
             System.out.println("Paketlaufnummer: " +dataPackages.get(i).getPacketLaufNummer());
-            System.out.println("Datenteil-Laenge: " +dataPackages.get(i).getDataPackageLength());
+            System.out.println("Datenteil-Länge: " +dataPackages.get(i).getDataPackageLength());
             System.out.println("Datenteil: " +dataPackages.get(i).getNachricht());
             System.out.println();
 
