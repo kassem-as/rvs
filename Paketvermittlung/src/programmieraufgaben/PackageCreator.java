@@ -1,13 +1,13 @@
 package programmieraufgaben;
 
+import java.util.InputMismatchException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 public class PackageCreator {
-    Scanner input = new Scanner(System.in);
-
+    Scanner input = new Scanner(System.in); //scanner um die Benutzer Eingaben zu bekommen.
 
     /**
      * Hier sollen die Kommandozeilen-Abfragen abgefragt und die Antworten
@@ -17,77 +17,103 @@ public class PackageCreator {
      * @param dataPackage Hier wird das Objekt uebergeben in das die abgefragten Werte gespeichert werden sollen
      * @return Gibt das als Parameter uebergebene Objekt, dass mit den abgefragten Werten befuellt wurde zurueck
      */
+
+    //Regex um die Korrektheit der IP Addresse (IP4) zu überprüfen.
+    private static final String IPV4_REGEX =
+            "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    private static final Pattern IPv4_PATTERN = Pattern.compile(IPV4_REGEX);
+
+    //Regex um die Korrektheit der IP Addresse (IP6) zu überprüfen.
+    private static final String IPV6_REGEX =
+            "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    private static final Pattern IPv6_PATTERN = Pattern.compile(IPV6_REGEX);
+
     public DataPackage fillParameters(DataPackage dataPackage) {
 
-       System.out.print("Version : "); dataPackage.setVersion(input.nextInt());
-        if(dataPackage.getVersion()!=4 && dataPackage.getVersion()!=6) { System.out.
-                println("Version ungültig. Bitte wählen Sie entweder Version 4 oder Version 6."
-                ); return null; }
-
-        System.out.print("Absender : "); dataPackage.setSender(input.next());
-
-        if(dataPackage.getSender() == null) {
-            System.out.println("Bitte geben sie eine richtige ipv4"); return null; }
-
-        String [] ipSender; if(dataPackage.getVersion()==4) { ipSender =
-                dataPackage.getSender().split("\\.");
-
-
-            if(ipSender.length < 4|| ipSender.length >4) {
-                System.out.println("Bitte geben sie eine richtige format des IPv4"); return
-                        null; } }else { ipSender = dataPackage.getSender().split("\\.");
-            if(ipSender.length < 6 || ipSender.length >6 ) {
-                System.out.println("Bitte geben sie eine richtige format des IPv6"); return
-                        null; } }
-
-        System.out.print("Empfänger : "); dataPackage.setReceiver(input.next());
-
-        if(dataPackage.getSender() == null) {
-            System.out.println("Bitte geben sie eine richtige ipv4"); return null; }
-
-        String [] ipReceiver; if(dataPackage.getVersion()==4) { ipReceiver =
-                dataPackage.getReceiver().split("\\.");
+        System.out.print("Version: ");
+        try {
+            dataPackage.setVersion(input.nextInt());             //scanner benutzt fuer User Eingabe.
+            //pruefen der Version Eingabe.
+            if(dataPackage.getVersion()!=4 && dataPackage.getVersion()!=6) {
+                System.out.println("Version ungültig. Bitte wählen Sie entweder Version 4 oder Version 6.");
+                return null;
+            }
+        }
+        catch (InputMismatchException e){
+            System.out.println("Fehler: Bitte nur version 4 oder 6 eingeben.");
+            return null;
+        }
 
 
-            if(ipReceiver.length < 4|| ipReceiver.length >4) {
-                System.out.println("Bitte geben sie eine richtige format des IPv4"); return
-                        null; } }else { ipReceiver = dataPackage.getReceiver().split("\\.");
-            if(ipReceiver.length < 6 || ipReceiver.length >6 ) {
-                System.out.println("Bitte geben sie eine richtige format des IPv6"); return
-                        null; } }
 
-        String sanad = "";
-        String str = "";
-        dataPackage.setNachricht(str);
+        System.out.print("Absender: ");
+        dataPackage.setSender(input.next()); 				 //scanner benutzt fuer User Eingabe.
+
+        //Pruefen der IP-Addresse der Absender.
+        if (dataPackage.getVersion() == 4 &&(!IPv4_PATTERN.matcher(dataPackage.getSender()).matches() || dataPackage.getSender() == null )) {
+            System.out.println("Die IP Addresse ist ungültig");
+            return null;
+        }else if(dataPackage.getVersion() == 6 &&(!IPv6_PATTERN.matcher(dataPackage.getSender()).matches() || dataPackage.getSender() == null )){
+            System.out.println("Die IP Addresse ist ungültig");
+            return null;
+        }
+
+        System.out.print("Empfänger: ");
+        dataPackage.setReceiver(input.next()); 				//scanner benutzt fuer User Eingabe.
+
+        //Pruefen der IP-Addresse der Empfaenger.
+        if (dataPackage.getVersion() == 4 &&(!IPv4_PATTERN.matcher(dataPackage.getReceiver()).matches() || dataPackage.getReceiver()== null )) {
+            System.out.println("Die IP Addresse ist ungültig");
+            return null;
+        }else if(dataPackage.getVersion() == 6 &&(!IPv6_PATTERN.matcher(dataPackage.getReceiver()).matches() || dataPackage.getReceiver() == null )){
+            System.out.println("Die IP Addresse ist ungültig");
+            return null;
+        }
+
+        String userMessage = "";
+        dataPackage.setMessage(userMessage);
         System.out.println("Nachricht : ");
 
+        //Um mehrzeilige Eingaben zu speichern, input.hasNextLine() ist benutzt in eine while Schleife.
+        // und um die schleife zu beenden, die mit Zeilenumbruch.Zeilenumbruch abgeschlossen wird.
         while(input.hasNextLine()) {
-            sanad = input.nextLine();
-            if(sanad.equals(".")) {
+            userMessage = input.nextLine();
+            if(userMessage.equals(".")) {
                 break;
             }
 
-            if(sanad.isEmpty()){
+            //um new-lines spaeter zu codieren siehe Methode (split Methode).
+            if(userMessage.isEmpty()){
 
-                dataPackage.setNachricht((dataPackage.getNachricht() + "\n"));
+                dataPackage.setMessage((dataPackage.getMessage() +" " + "\n"));
             }
             else {
-                Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-                Matcher m = p.matcher(sanad);
+                // um die special-characters zu finden und dann manipulieren.
+                //replaceAll methode erzetzt jeden sonder-zeichen mit sich selbst vorangegangen und gefolgt mit einem leeren zeichen.
+                Pattern p = Pattern.compile("[^a-z0-9 \\äöüß]", Pattern.CASE_INSENSITIVE);
+                Matcher m = p.matcher(userMessage);
                 boolean b = m.find();
                 if(b){
-                    sanad = sanad.replaceAll("\\W"," $0 ");
+                    userMessage = userMessage.replaceAll("\\W"," $0 ");
                 }
 
-                dataPackage.setNachricht(dataPackage.getNachricht() + " " + sanad + " " +"\n" + " ");
+                //Message String konstruktion.
+                dataPackage.setMessage(dataPackage.getMessage() + " " + userMessage + " " +"\n" + " ");
 
             }
         }
-        dataPackage.setNachricht(dataPackage.getNachricht().replaceAll("^[\n\r]", "").replaceAll("^[\n\r]", ""));
-        dataPackage.setNachricht(dataPackage.getNachricht().trim());
-        dataPackage.setNachricht(dataPackage.getNachricht().replaceAll("[\n\r]", "\\\\n"));
-        dataPackage.setNachricht(dataPackage.getNachricht().trim());
-        System.out.println(dataPackage.getNachricht());
+        //entfaernt die whitespaces(/n, " ") am Zeilenanfang und am Zeilenende mit hilfe von replaceAll methode und trim.
+        dataPackage.setMessage(dataPackage.getMessage().replaceAll("^[\n\r]", ""));
+        dataPackage.setMessage(dataPackage.getMessage().trim());
+        dataPackage.setMessage(dataPackage.getMessage().replaceAll("[\n\r]", "\\\\n")); //ersetzt newlines mit string /n.
+        if(dataPackage.getMessage().isEmpty())
+        {
+            System.out.println("Die Nachricht ist leer, bitte eine Nachricht eingeben.");
+            return null;
+        }
+
         return dataPackage;
     }
 
@@ -100,59 +126,74 @@ public class PackageCreator {
      * @return Gibt das als Parameter uebergebene Objekt mit den aufgeteiltet Datenpaketen zurueck
      */
 
+
+
+    //hier werden verschieden faelle gecheckt die von methode splitPackage benutzt werden.
+    //fall 1: falls input oder extension /n enthaellt und ob es die gesamte laenge von beide kleiner als datapackagelength.
+    //fall 2: falls input oder extension keine /n enthaellt aber sonderzeichen enthaelt und ob die gesamte laenge von beide + 1 (leerzeichen) kleiner als datapackagelength.
+    //fall 3: falls input oder extension keine /n und sonderzeichen enthaellt und ob die gesamte laenge von beide + 1 (leerzeichen) kleiner als datapackagelength.
+    //fall 0: keine der oben gennanten faelle ist erfuellt.
     public int checkLength (String input, String extension, DataPackage dataPackage) {
         if(extension.equals("\\n") || input.endsWith("\\n")) {
             if((input.length() + extension.length())<=dataPackage.getDataPackageLength()) {
-                return 1; //fall /n und geht
+                return 1;
             }else {
-                return 0; //nicht geht
+                return 0;
             }
         }else {
-            if((input.valueOf(input.charAt(input.length()-1)).matches("[^a-zA-Z0-9]") || extension.valueOf(extension.charAt(0)).
-                    matches("[^a-zA-Z0-9]")) &&
-                    input.length() + extension.length() <= dataPackage.getDataPackageLength()) {
-                return 3;
-            }else if ((input.length() + extension.length() + 1)<=dataPackage.getDataPackageLength()){
+            if((input.valueOf(input.charAt(input.length()-1)).matches("[^a-zA-Z0-9 \\äöüß]") || extension.valueOf(extension.charAt(0)).
+                    matches("[^a-zA-Z0-9 \\äöüß]")) && input.length() + extension.length() <= dataPackage.getDataPackageLength()) {
                 return 2;
+            }else if ((input.length() + extension.length() + 1)<=dataPackage.getDataPackageLength()){
+                return 3;
             } else {
-                return 0; // nicht geht
+                return 0;
             }
         }
     }
 
-
     public List<DataPackage> splitPackage(DataPackage dataPackage) {
-        List<DataPackage> dataPackages = new LinkedList<>();
-        String [] result = dataPackage.getNachricht().split(" +");
-        for(int j = 0;j<result.length;j++){
-            System.out.println(result[j]);
+
+        //return null wenn die User Eingaben falsch sind, um die Nullpointer exceptions zu vermeiden, und den Vorgang zu wiederholen.
+        if (dataPackage == null){
+            return null;
         }
+        List<DataPackage> dataPackages = new LinkedList<>();
+        //split methode teilt jeder wort alleine und setzt das wert als eigenes element in einem array result(entfernt leere zeichen).
+        String [] result = dataPackage.getMessage().split(" +");
+
+        //hier wird gecheckt ob jedes wort kleiner als datapackagelength ist. da keine wort > datapackagelength erlaubt ist.
+        for(int i=0; i<result.length; i++) {
+            if(result[i].length() > dataPackage.getDataPackageLength()) {
+                System.out.println("Die Nachricht kann nicht versendet werden, da sie ein Wort (" + result[i] + ") mit Länge " + result[i].length() + " > " + dataPackage.getDataPackageLength() +  " enthält.");
+                return null;
+            }
+        }
+
+        //hier wird jeder Datenpaket nach die oben gennanten faellen in methode checkLength() konstruiert.
         for(int i=0; i<result.length; i++) {
             String input=result[i];
             for(int j=i+1; j<result.length; j++) {
                 String extension = result[j];
-                if(checkLength(input, extension, dataPackage) == 1) {
+                int check = checkLength(input, extension, dataPackage);
+
+                if(check == 1 || check ==2) {
                     input = input + extension;
-                    if(j==(result.length-1)) {
-                        i = j;
-                    }
-                }else if(checkLength(input, extension, dataPackage) == 2) {
+                    if(j==result.length-1){i = j;}
+
+                }else if(check== 3){
                     input = input + " " + extension;
-                    if((j==result.length-1)) {
-                        i = j;
-                    }
-                }else if(checkLength(input, extension, dataPackage) == 3){
-                    input = input + extension;
-                    if(j==result.length-1){
-                        i=j;
-                    }
+                    if(j==result.length-1){i = j;}
+
                 } else {
                     i=j-1;
                     break;
+
                 }
             }
+            //jeden paket wird in eine newPackage objekt mit seinem attribute gesetzt.
             DataPackage newPackage= new DataPackage(input.length());
-            newPackage.setNachricht(input);
+            newPackage.setMessage(input);
             newPackage.setReceiver(dataPackage.getReceiver());
             newPackage.setSender(dataPackage.getSender());
             newPackage.setVersion(dataPackage.getVersion());
@@ -169,17 +210,22 @@ public class PackageCreator {
      * @param dataPackages Hier wird die Liste uebergeben, deren Elemente in die Kommandozeile ausgegeben werden sollen
      */
     public void printOutPackage(List<DataPackage> dataPackages) {
+
+        //return null wenn die User Eingaben falsch sind, um die Nullpointer exceptions zu vermeiden, und den Vorgang zu wiederholen.
+        if(dataPackages == null){
+            return;
+        }
         System.out.println();
         System.out.println("Es sind " + dataPackages.size() + " Datenpakete notwendig.");
         System.out.println();
         for(int i = 0; i<dataPackages.size(); i++){
-            dataPackages.get(i).setPacketLaufNummer(i+1);
+            dataPackages.get(i).setSerialNum(i+1);
             System.out.println("Version: " +dataPackages.get(i).getVersion());
             System.out.println("Absender: " +dataPackages.get(i).getSender());
             System.out.println("Empfänger: " +dataPackages.get(i).getReceiver());
-            System.out.println("Paketlaufnummer: " +dataPackages.get(i).getPacketLaufNummer());
+            System.out.println("Paketlaufnummer: " +dataPackages.get(i).getSerialNum());
             System.out.println("Datenteil-Länge: " +dataPackages.get(i).getDataPackageLength());
-            System.out.println("Datenteil: " +dataPackages.get(i).getNachricht());
+            System.out.println("Datenteil: " +dataPackages.get(i).getMessage());
             System.out.println();
 
         }
