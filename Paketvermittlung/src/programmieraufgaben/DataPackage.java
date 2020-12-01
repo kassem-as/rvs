@@ -31,24 +31,69 @@ public class DataPackage {
      * Setzt die maximale Datenteil-Länge
      * @param dataPackageLength
      */
+    public void setDataPackageLength (int dataPackageLength) { this.dataPackageLength = dataPackageLength; }
 
     // setters und getter um die Werte der Attribute zu verwalten...
 
-    public void setDataPackageLength(int dataPackageLength) { this.dataPackageLength = dataPackageLength; }
 
+    /**
+     * Setzt die IP-Adresse des Sender.
+     * @param sender
+     */
     public void setSender (String sender) { this.sender = sender;}
+
+    /**
+     * Gibt die IP-Adresse des Senders zurueck.
+     * @return IP-Adresse des Sender.
+     */
     public String getSender() {return sender;}
 
+    /**
+     * Setzt die IP-Adresse des Empfaengers.
+     * @param empfaenger
+     */
     public void setReceiver (String empfaenger) { this.receiver = empfaenger;}
+
+    /**
+     * Gibt die IP-Adresse der Empfaengers zurueck.
+     * @return IP-Adresse des Empfaengers.
+     */
     public String getReceiver() {return receiver;}
 
+    /**
+     * Setzt die Nachricht.
+     * @param message
+     */
     public void setMessage(String message) {this.message = message;}
+
+    /**
+     * Gibt die Nachricht zurueck.
+     * @return Nachricht.
+     */
     public String getMessage() {return message;}
 
+    /**
+     * Setzt die IP-Version.
+     * @param version
+     */
     public void setVersion (int version) { this.version = version; }
+
+    /**
+     * Gibt die IP-Version zurueck.
+     * @return IP-Version
+     */
     public int getVersion() {return version;}
 
+    /**
+     * Setzt die Paketlaufnummber.
+     * @param serialNumber
+     */
     public void setSerialNum(int serialNumber) { this.serialNumber = serialNumber;}
+
+    /**
+     * Gibt die Paketlaufnummer zurueck.
+     * @return Paketlaufnummber.
+     */
     public int getSerialNum() { return serialNumber;}
 
 }

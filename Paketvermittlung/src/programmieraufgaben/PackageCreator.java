@@ -6,6 +6,12 @@ import java.util.regex.Pattern;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+
+/**
+ * Hier werden die Benutzer Eingaben abgefragt in einem DataPackage Object gespeichert und manipuliert.
+ * Laengere Nachrichten werden in einzelne Datenpakete aufgeteilt.
+ * Die einzelnen Datenpakete werden ausgegeben.
+ */
 public class PackageCreator {
     Scanner input = new Scanner(System.in); //scanner um die Benutzer Eingaben zu bekommen.
 
@@ -117,22 +123,18 @@ public class PackageCreator {
         return dataPackage;
     }
 
-
     /**
-     * Aus dem als Parameter uebergebenen Paket sollen die Informationen
-     * ausgelesen und in einzelne Datenpakete aufgeteilt werden
+     * hier werden verschieden Faelle gecheckt die von methode splitPackage benutzt werden.
+     *     fall 1: input oder extension  enthaelt /n und die gesamte laenge von beide ist kleiner als datapackagelength.
+     *     fall 2: input oder extension enthaelt keine /n aber sonderzeichen  und  die gesamte laenge von beide + 1 (leerzeichen) ist kleiner als datapackagelength.
+     *     fall 3: input oder extension enthaelt kein /n und kein Sonderzeichen und die gesamte laenge von beide + 1 (leerzeichen)  ist kleiner als datapackagelength.
+     *     fall 0: keine der oben gennanten faelle ist erfuellt.
      *
-     * @param dataPackage Hier wird das Objekt uebergeben in das das Resultat gespeichert werden soll
-     * @return Gibt das als Parameter uebergebene Objekt mit den aufgeteiltet Datenpaketen zurueck
+     * @param input Hier wird ein Teil der Nachricht, der im Hilfsarray(result) gespeichert ist, uebergeben.
+     * @param extension Hier wird ein anderer Teil der Nachricht uebergeben und zum ersten passend hinzugefuegt.
+     * @param dataPackage Hier wird das Object uebergeben, der die maximale Datenteil-Laenge enthaelt.
+     * @return Gibt den passenden Integer zurueck, der in Mothode splitPackage benutzt wird.
      */
-
-
-
-    //hier werden verschieden faelle gecheckt die von methode splitPackage benutzt werden.
-    //fall 1: falls input oder extension /n enthaellt und ob es die gesamte laenge von beide kleiner als datapackagelength.
-    //fall 2: falls input oder extension keine /n enthaellt aber sonderzeichen enthaelt und ob die gesamte laenge von beide + 1 (leerzeichen) kleiner als datapackagelength.
-    //fall 3: falls input oder extension keine /n und sonderzeichen enthaellt und ob die gesamte laenge von beide + 1 (leerzeichen) kleiner als datapackagelength.
-    //fall 0: keine der oben gennanten faelle ist erfuellt.
     public int checkLength (String input, String extension, DataPackage dataPackage) {
         if(extension.equals("\\n") || input.endsWith("\\n")) {
             if((input.length() + extension.length())<=dataPackage.getDataPackageLength()) {
@@ -151,7 +153,13 @@ public class PackageCreator {
             }
         }
     }
-
+    /**
+     * Aus dem als Parameter uebergebenen Paket sollen die Informationen
+     * ausgelesen und in einzelne Datenpakete aufgeteilt werden
+     *
+     * @param dataPackage Hier wird das Objekt uebergeben in das das Resultat gespeichert werden soll
+     * @return Gibt das als Parameter uebergebene Objekt mit den aufgeteiltet Datenpaketen zurueck
+     */
     public List<DataPackage> splitPackage(DataPackage dataPackage) {
 
         //return null wenn die User Eingaben falsch sind, um die Nullpointer exceptions zu vermeiden, und den Vorgang zu wiederholen.
@@ -159,7 +167,7 @@ public class PackageCreator {
             return null;
         }
         List<DataPackage> dataPackages = new LinkedList<>();
-        //split methode teilt jeder wort alleine und setzt das wert als eigenes element in einem array result(entfernt leere zeichen).
+        //split methode teilt jedes Wort alleine und setzt das Wort als eigenes Element in einem Hilfsarray result(entfernt leere zeichen).
         String [] result = dataPackage.getMessage().split(" +");
 
         //hier wird gecheckt ob jedes wort kleiner als datapackagelength ist. da keine wort > datapackagelength erlaubt ist.
@@ -170,7 +178,7 @@ public class PackageCreator {
             }
         }
 
-        //hier wird jeder Datenpaket nach die oben gennanten faellen in methode checkLength() konstruiert.
+        //hier wird jeder Datenpaket nach die in Methode checkLength() gennanten faellen konstruiert.
         for(int i=0; i<result.length; i++) {
             String input=result[i];
             for(int j=i+1; j<result.length; j++) {
